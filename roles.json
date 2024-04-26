@@ -1,0 +1,22 @@
+{
+    "781419076462837760" : {
+        "lists" : [
+            {
+                "name" : "colors",
+                "type" : "single",
+                "description": "Choose your color",
+                "options" : [
+                    "roleid"
+                ]
+            },
+            {
+                "name" : "content",
+                "type" : "multi",
+                "description": "What content do you want pinged for?",
+                "options" : [
+                    "roleid"
+                ]
+            }
+        ]
+    }
+}
