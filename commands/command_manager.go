@@ -4,43 +4,39 @@ import (
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
-)
 
-type Command interface {
-	get_command() *discordgo.ApplicationCommand
-	set_command(command *discordgo.ApplicationCommand)
-	handler(s *discordgo.Session, i *discordgo.InteractionCreate)
-}
+	"Librarian/commands/hi"
+	"Librarian/commands/roles"
+)
 
 var (
-	registered_commands []*discordgo.ApplicationCommand = make([]*discordgo.ApplicationCommand, 0)
-	session             *discordgo.Session
+	registered_commands []*discordgo.ApplicationCommand                                                      = make([]*discordgo.ApplicationCommand, 0)
+	available_packages  map[string]func(*discordgo.Session, string) ([]*discordgo.ApplicationCommand, error) = make(map[string]func(*discordgo.Session, string) ([]*discordgo.ApplicationCommand, error), 0)
 )
 
-func Initialize_Handler(s *discordgo.Session) {
-	session = s
+func init() {
+	available_packages["Roles"] = roles.Roles
+	available_packages["Hi"] = hi.Hi
 }
 
-func Register_Command(guild string, command Command) error {
-
-	c, err := session.ApplicationCommandCreate(session.State.User.ID, guild, command.get_command())
-
-	if err != nil {
-		fmt.Println(err)
-		return err
+func Register_Packages(s *discordgo.Session, guild string, packages ...string) {
+	for _, pkg := range packages {
+		commands, err := available_packages[pkg](s, guild)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		register_commands(commands...)
 	}
-
-	command.set_command(c)
-	session.AddHandler(command.handler)
-
-	registered_commands = append(registered_commands, c)
-
-	return nil
 }
 
-func Unregister_Commands() {
+func register_commands(commands ...*discordgo.ApplicationCommand) {
+	registered_commands = append(registered_commands, commands...)
+}
+
+func Unregister_Commands(s *discordgo.Session) {
 	for _, v := range registered_commands {
-		err := session.ApplicationCommandDelete(session.State.User.ID, v.GuildID, v.ID)
+		err := s.ApplicationCommandDelete(s.State.User.ID, v.GuildID, v.ID)
 		if err != nil {
 			println("Cannot delete '%v' command: %v", v.Name, err)
 		}

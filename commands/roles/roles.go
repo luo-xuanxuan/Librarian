@@ -1,8 +1,9 @@
-package commands
+package roles
 
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/bwmarrin/discordgo"
 
@@ -10,13 +11,8 @@ import (
 )
 
 type roles struct {
-	command    discordgo.ApplicationCommand
-	categories []role_category
-}
-
-type role struct {
-	Name string `json:"Name"`
-	ID   string `json:"ID"`
+	guild   string
+	command *discordgo.ApplicationCommand
 }
 
 type role_category struct {
@@ -27,54 +23,71 @@ type role_category struct {
 	Roles       []role `json:"Roles"`
 }
 
-func Roles(data json.RawMessage) *roles {
+type role struct {
+	Name string `json:"Name"`
+	ID   string `json:"ID"`
+}
 
-	// Decode the JSON data into the roles struct
+var config map[string][]role_category = make(map[string][]role_category, 0)
 
-	var categories []role_category
+var role_commands map[string]roles = make(map[string]roles, 0)
 
-	var _ = json.Unmarshal(data, &categories)
+func init() {
 
-	var options = make([]*discordgo.ApplicationCommandOption, 0)
+	jsonFile, err := os.Open("./roles.json")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer jsonFile.Close()
 
-	for _, category := range categories {
-		options = append(options, &discordgo.ApplicationCommandOption{
-			Type:        discordgo.ApplicationCommandOptionSubCommand,
-			Name:        category.Name,
-			Description: category.Description,
-		})
+	// Decode the JSON data into a struct
+	decoder := json.NewDecoder(jsonFile)
+	err = decoder.Decode(&config)
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
 
-	var r = roles{
-		command: discordgo.ApplicationCommand{
-			Name:        "roles",
-			Description: "Sets your roles!",
-			Options:     options,
-		},
-		categories: categories,
-	}
+	for k, v := range config {
+		for _, category := range v {
 
-	session.AddHandler(r.role_select)
+			var options = make([]*discordgo.ApplicationCommandOption, 0)
 
-	return &r
+			options = append(options, &discordgo.ApplicationCommandOption{
+				Type:        discordgo.ApplicationCommandOptionSubCommand,
+				Name:        category.Name,
+				Description: category.Description,
+			})
 
-}
-
-func (c *roles) get_command() *discordgo.ApplicationCommand {
-	return &c.command
-}
-
-func (c *roles) set_command(cmd *discordgo.ApplicationCommand) {
-	c.command = *cmd
-}
-
-func (c *roles) get_category_id(name string) int {
-	for i, category := range c.categories {
-		if name == category.Name {
-			return i
+			role_commands[k] = roles{
+				guild: k,
+				command: &discordgo.ApplicationCommand{
+					Name:        "roles",
+					Description: "Sets your roles!",
+					Options:     options,
+				},
+			}
 		}
 	}
-	return -1
+}
+
+func Roles(s *discordgo.Session, guild string) ([]*discordgo.ApplicationCommand, error) {
+
+	var r = role_commands[guild]
+
+	var err error
+	r.command, err = s.ApplicationCommandCreate(s.State.User.ID, guild, r.command)
+
+	if err != nil {
+		return []*discordgo.ApplicationCommand{}, err
+	}
+
+	s.AddHandler(r.handler)
+	s.AddHandler(r.role_select)
+
+	return []*discordgo.ApplicationCommand{r.command}, nil
+
 }
 
 func (c *roles) handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
@@ -86,9 +99,9 @@ func (c *roles) handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 			var options = make([]discordgo.SelectMenuOption, 0)
 
-			var id = c.get_category_id(data.Options[0].Name)
+			id, _ := get_category_id(c.guild, data.Options[0].Name)
 
-			var category = c.categories[id]
+			var category = config[c.guild][id]
 
 			for _, role := range category.Roles {
 				options = append(options, discordgo.SelectMenuOption{
@@ -129,9 +142,9 @@ func (c *roles) role_select(s *discordgo.Session, i *discordgo.InteractionCreate
 		// Type assertion to check it's a ComponentInteraction
 		component := i.MessageComponentData()
 
-		var categories = make([]string, 0, len(c.categories))
+		var categories = make([]string, 0, len(config[c.guild]))
 
-		for _, category := range c.categories {
+		for _, category := range config[c.guild] {
 			categories = append(categories, category.Name)
 		}
 
@@ -146,11 +159,11 @@ func (c *roles) role_select(s *discordgo.Session, i *discordgo.InteractionCreate
 				return
 			}
 
-			var id = c.get_category_id(component.CustomID)
+			id, _ := get_category_id(c.guild, component.CustomID)
 
 			//available roles
 			var role_list []string
-			for _, role := range c.categories[id].Roles {
+			for _, role := range config[c.guild][id].Roles {
 				role_list = append(role_list, role.ID)
 			}
 
@@ -160,33 +173,22 @@ func (c *roles) role_select(s *discordgo.Session, i *discordgo.InteractionCreate
 
 			// Assign new roles
 			for _, role := range rolesToAdd {
-				assign_role(s, i.GuildID, i.Member.User.ID, role)
+				utils.Assign_Role(s, i.GuildID, i.Member.User.ID, role)
 			}
 
 			// Remove unselected roles
 			for _, role := range rolesToRemove {
-				remove_role(s, i.GuildID, i.Member.User.ID, role)
+				utils.Remove_Role(s, i.GuildID, i.Member.User.ID, role)
 			}
 		}
 	}
 }
 
-func assign_role(s *discordgo.Session, guild string, user string, role string) error {
-	err := s.GuildMemberRoleAdd(guild, user, role)
-	if err != nil {
-		fmt.Printf("Failed to assign role: %v\n", err)
-		return err
+func get_category_id(guild string, name string) (int, error) {
+	for i, category := range config[guild] {
+		if name == category.Name {
+			return i, nil
+		}
 	}
-	fmt.Println("Role assigned successfully")
-	return nil
-}
-
-func remove_role(s *discordgo.Session, guild string, user string, role string) error {
-	err := s.GuildMemberRoleRemove(guild, user, role)
-	if err != nil {
-		fmt.Printf("Failed to remove role: %v\n", err)
-		return err
-	}
-	fmt.Println("Role removed successfully")
-	return nil
+	return 0, fmt.Errorf("category \"%s\" does not exist", name)
 }
