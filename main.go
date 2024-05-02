@@ -32,12 +32,6 @@ func main() {
 		return
 	}
 
-	// Register the messageCreate func as a callback for MessageCreate events.
-	//dg.AddHandler(messageCreate)
-
-	//dg.AddHandler(pipebomb)
-
-	// In this example, we only care about receiving message events.
 	dg.Identify.Intents = discordgo.IntentsGuildMessages
 
 	// Open a websocket connection to Discord and begin listening.
@@ -46,8 +40,10 @@ func main() {
 		fmt.Println("error opening connection,", err)
 		return
 	}
+	defer dg.Close()
 
 	commands.Initialize_Handler(dg)
+	defer commands.Unregister_Commands()
 
 	create_commands()
 
@@ -56,11 +52,6 @@ func main() {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
-
-	commands.Unregister_Commands()
-
-	// Cleanly close down the Discord session.
-	dg.Close()
 }
 
 func create_commands() {
