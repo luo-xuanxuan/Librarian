@@ -1,4 +1,4 @@
-package main
+package commands
 
 import (
 	"fmt"
@@ -15,22 +15,34 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-var serverAddr = "192.168.1.136:4210"
-
-var pipebombCommand = discordgo.ApplicationCommand{
-	Name:        "pipebomb",
-	Description: "Puts a message on the pipebomb!",
-	Options: []*discordgo.ApplicationCommandOption{
-		{
-			Type:        discordgo.ApplicationCommandOptionString,
-			Name:        "text",
-			Description: "The message for the screen.",
-			Required:    true,
-		},
-	},
+type pipebomb struct {
+	command discordgo.ApplicationCommand
 }
 
-func pipebomb(s *discordgo.Session, i *discordgo.InteractionCreate) {
+var server_address = "192.168.1.136:4210"
+
+func Pipebomb() *pipebomb {
+	return &pipebomb{
+		command: discordgo.ApplicationCommand{
+			Name:        "Pipebomb",
+			Description: "Puts a message on the pipebomb!",
+			Options: []*discordgo.ApplicationCommandOption{
+				{
+					Type:        discordgo.ApplicationCommandOptionString,
+					Name:        "text",
+					Description: "The message for the screen.",
+					Required:    true,
+				},
+			},
+		},
+	}
+}
+
+func (c pipebomb) get_command() *discordgo.ApplicationCommand {
+	return &c.command
+}
+
+func (c pipebomb) handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	if i.Type == discordgo.InteractionApplicationCommand {
 
 		data := i.ApplicationCommandData()
@@ -64,7 +76,7 @@ func pipebomb(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			buf := textToBytes(i.Member.User.Username + ": " + userInput)
 
 			// Resolve UDP address
-			addr, err := net.ResolveUDPAddr("udp", serverAddr)
+			addr, err := net.ResolveUDPAddr("udp", server_address)
 			if err != nil {
 				log.Fatal(err)
 			}
