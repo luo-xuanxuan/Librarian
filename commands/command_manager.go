@@ -1,11 +1,14 @@
 package commands
 
 import (
+	"fmt"
+
 	"github.com/bwmarrin/discordgo"
 )
 
 type Command interface {
 	get_command() *discordgo.ApplicationCommand
+	set_command(command *discordgo.ApplicationCommand)
 	handler(s *discordgo.Session, i *discordgo.InteractionCreate)
 }
 
@@ -23,8 +26,11 @@ func Register_Command(guild string, command Command) error {
 	c, err := session.ApplicationCommandCreate(session.State.User.ID, guild, command.get_command())
 
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
+
+	command.set_command(c)
 	session.AddHandler(command.handler)
 
 	registered_commands = append(registered_commands, c)

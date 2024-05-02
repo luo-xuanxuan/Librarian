@@ -16,15 +16,15 @@ import (
 )
 
 type pipebomb struct {
-	command discordgo.ApplicationCommand
+	command *discordgo.ApplicationCommand
 }
 
 var server_address = "192.168.1.136:4210"
 
 func Pipebomb() *pipebomb {
 	return &pipebomb{
-		command: discordgo.ApplicationCommand{
-			Name:        "Pipebomb",
+		command: &discordgo.ApplicationCommand{
+			Name:        "pipebomb",
 			Description: "Puts a message on the pipebomb!",
 			Options: []*discordgo.ApplicationCommandOption{
 				{
@@ -38,16 +38,20 @@ func Pipebomb() *pipebomb {
 	}
 }
 
-func (c pipebomb) get_command() *discordgo.ApplicationCommand {
-	return &c.command
+func (c *pipebomb) get_command() *discordgo.ApplicationCommand {
+	return c.command
 }
 
-func (c pipebomb) handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func (c *pipebomb) set_command(cmd *discordgo.ApplicationCommand) {
+	c.command = cmd
+}
+
+func (c *pipebomb) handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	if i.Type == discordgo.InteractionApplicationCommand {
 
 		data := i.ApplicationCommandData()
 
-		if data.Name == "pipebomb" {
+		if data.Name == c.command.Name {
 
 			userInput := ""
 			for _, option := range data.Options {

@@ -1,8 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -55,6 +58,34 @@ func main() {
 }
 
 func create_commands() {
-	commands.Register_Command("", commands.Hi())
-	commands.Register_Command("", commands.Pipebomb())
+	//misc commands
+	//commands.Register_Command("", commands.Hi())
+	//commands.Register_Command("", commands.Pipebomb())
+
+	//roles
+	// Open the JSON file
+	jsonFile, err := os.Open("./roles.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer jsonFile.Close()
+
+	// Read the file content
+	byteValue, err := io.ReadAll(jsonFile)
+	if err != nil {
+		log.Fatalf("Error reading JSON file: %s", err)
+	}
+
+	// Use a map of string to json.RawMessage to dynamically handle the JSON structure
+	var guilds map[string]json.RawMessage
+	if err := json.Unmarshal(byteValue, &guilds); err != nil {
+		log.Fatalf("Error decoding JSON: %s", err)
+	}
+
+	// Process each guild entry
+	for guild, data := range guilds {
+		fmt.Printf("Processing guild: %s\n", guild)
+		commands.Register_Command(guild, commands.Roles(data))
+	}
+
 }

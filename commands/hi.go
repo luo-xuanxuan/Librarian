@@ -6,27 +6,25 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-type hi_command struct {
+type hi struct {
 	command discordgo.ApplicationCommand
 }
 
-func Hi() *hi_command {
+func Hi() *hi {
 
-	var cmd = discordgo.ApplicationCommand{
-		Name:        "hello",
-		Description: "Says hello!",
-	}
-
-	return &hi_command{
-		command: cmd,
+	return &hi{
+		command: discordgo.ApplicationCommand{
+			Name:        "hello",
+			Description: "Says hello!",
+		},
 	}
 }
 
-func (c hi_command) get_command() *discordgo.ApplicationCommand {
+func (c hi) get_command() *discordgo.ApplicationCommand {
 	return &c.command
 }
 
-func (c hi_command) handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func (c hi) handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	if i.Type == discordgo.InteractionApplicationCommand {
 
 		data := i.ApplicationCommandData()
