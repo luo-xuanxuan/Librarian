@@ -19,6 +19,10 @@ func init() {
 	available_packages["Hi"] = hi.Hi
 }
 
+func Clean(s *discordgo.Session) {
+	unregister_commands(s)
+}
+
 func Register_Packages(s *discordgo.Session, guild string, packages ...string) {
 	for _, pkg := range packages {
 		commands, err := available_packages[pkg](s, guild)
@@ -34,7 +38,7 @@ func register_commands(commands ...*discordgo.ApplicationCommand) {
 	registered_commands = append(registered_commands, commands...)
 }
 
-func Unregister_Commands(s *discordgo.Session) {
+func unregister_commands(s *discordgo.Session) {
 	for _, v := range registered_commands {
 		err := s.ApplicationCommandDelete(s.State.User.ID, v.GuildID, v.ID)
 		if err != nil {

@@ -41,7 +41,7 @@ func main() {
 		return
 	}
 	defer s.Close()
-	defer commands.Unregister_Commands(s)
+	defer commands.Clean(s)
 
 	create_commands(s)
 

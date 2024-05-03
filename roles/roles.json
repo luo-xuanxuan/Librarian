@@ -1,0 +1,210 @@
+{
+    "491232530314297365": [
+        {
+            "Name": "colors",
+            "Description": "Sets your color.",
+            "MinValues": 0,
+            "MaxValues": 1,
+            "Roles": [
+                {
+                    "Name": "test",
+                    "ID": "1235442679291183114"
+                },
+                {
+                    "Name": "new role",
+                    "ID": "680966273374748673"
+                }
+            ]
+        }
+    ],
+    "781419076462837760": [
+        {
+            "Name": "colors",
+            "Description": "Sets your color.",
+            "MinValues": 0,
+            "MaxValues": 1,
+            "Roles": [
+                {
+                    "Name": "Green",
+                    "ID": "781577593857376308"
+                },
+                {
+                    "Name": "Red",
+                    "ID": "781587329264648202"
+                },
+                {
+                    "Name": "Yellow",
+                    "ID": "781587376073343007"
+                },
+                {
+                    "Name": "Blue",
+                    "ID": "781587406901084160"
+                },
+                {
+                    "Name": "Purple",
+                    "ID": "781587447783096391"
+                },
+                {
+                    "Name": "Orange",
+                    "ID": "781587477449539634"
+                },
+                {
+                    "Name": "Silver",
+                    "ID": "781587505098784849"
+                },
+                {
+                    "Name": "Gray",
+                    "ID": "781587541865529365"
+                },
+                {
+                    "Name": "Black",
+                    "ID": "781699323816706088"
+                },
+                {
+                    "Name": "White",
+                    "ID": "782450629192187905"
+                },
+                {
+                    "Name": "Neon Green",
+                    "ID": "782450785216495648"
+                },
+                {
+                    "Name": "Dark Purple",
+                    "ID": "784576174402961459"
+                },
+                {
+                    "Name": "Pink",
+                    "ID": "879385745494794240"
+                },
+                {
+                    "Name": "Peach",
+                    "ID": "784577433012535326"
+                }
+            ]
+        },
+        {
+            "Name": "content",
+            "Description": "Select the types of content you enjoy!",
+            "MinValues": 0,
+            "MaxValues": 25,
+            "Roles": [
+                {
+                    "Name": "Savage",
+                    "ID": "787842609158160414"
+                },
+                {
+                    "Name": "Extreme",
+                    "ID": "787842689508442144"
+                },
+                {
+                    "Name": "Maps",
+                    "ID": "787843325457072148"
+                },
+                {
+                    "Name": "PvP",
+                    "ID": "787843353836257291"
+                },
+                {
+                    "Name": "BLU",
+                    "ID": "787843779973349466"
+                },
+                {
+                    "Name": "Fates",
+                    "ID": "787843414975840266"
+                },
+                {
+                    "Name": "Fishing",
+                    "ID": "787843547533541436"
+                },
+                {
+                    "Name": "Gold Saucer",
+                    "ID": "878507983116599317"
+                },
+                {
+                    "Name": "Alliance",
+                    "ID": "1108140079437860934"
+                },
+                {
+                    "Name": "Unreal",
+                    "ID": "1064290979923902634"
+                },
+                {
+                    "Name": "Deep Dungeon",
+                    "ID": "1064290876773388288"
+                }
+            ]
+        },
+        {
+            "Name": "roles",
+            "Description": "Your in game roles!",
+            "MinValues": 0,
+            "MaxValues": 25,
+            "Roles": [
+                {
+                    "Name": "Tank",
+                    "ID": "787843641174917130"
+                },
+                {
+                    "Name": "DPS",
+                    "ID": "878539112557187123"
+                },
+                {
+                    "Name": "Healer",
+                    "ID": "787843670363734046"
+                },
+                {
+                    "Name": "Disciple of Hand",
+                    "ID": "878540665938673675"
+                },
+                {
+                    "Name": "Disciple of Land",
+                    "ID": "878540759693922304"
+                }
+            ]
+        },
+        {
+            "Name": "community",
+            "Description": "Community roles",
+            "MinValues": 0,
+            "MaxValues": 25,
+            "Roles": [
+                {
+                    "Name": "Contests",
+                    "ID": "789574161231642666"
+                },
+                {
+                    "Name": "Giveaways",
+                    "ID": "789574201039650867"
+                },
+                {
+                    "Name": "Events",
+                    "ID": "790325795590897674"
+                },
+                {
+                    "Name": "Tabletop",
+                    "ID": "1145541387572477992"
+                },
+                {
+                    "Name": "Anime",
+                    "ID": "784576322319679490"
+                },
+                {
+                    "Name": "Movies",
+                    "ID": "784576356469964830"
+                }
+            ]
+        },
+        {
+            "Name": "nsfw",
+            "Description": "Do not take the NSFW role if you are not ages 18+",
+            "MinValues": 0,
+            "MaxValues": 0,
+            "Roles": [
+                {
+                    "Name": "nsfw",
+                    "ID": "859973152389726238"
+                }
+            ]
+        }
+    ]
+}
