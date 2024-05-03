@@ -68,12 +68,13 @@ func Roles(s *discordgo.Session, guild string) ([]*discordgo.ApplicationCommand,
 		return []*discordgo.ApplicationCommand{}, err
 	}
 
-	c, err := Role_Edit(s, guild)
-	if err != nil {
-		return []*discordgo.ApplicationCommand{}, err
-	}
+	/*
+		c, err := Role_Edit(s, guild)
+		if err != nil {
+			return []*discordgo.ApplicationCommand{}, err
+		}*/
 
-	return append(r, c...), nil
+	return r, nil
 
 }
 
