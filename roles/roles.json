@@ -193,18 +193,6 @@
                     "ID": "784576356469964830"
                 }
             ]
-        },
-        {
-            "Name": "nsfw",
-            "Description": "Do not take the NSFW role if you are not ages 18+",
-            "MinValues": 0,
-            "MaxValues": 0,
-            "Roles": [
-                {
-                    "Name": "nsfw",
-                    "ID": "859973152389726238"
-                }
-            ]
         }
     ]
 }
