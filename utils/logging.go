@@ -28,7 +28,7 @@ func init() {
 	var baseLogger = logrus.New()
 	baseLogger.Out = os.Stdout
 	baseLogger.Formatter = &logrus.TextFormatter{
-		FullTimestamp: false,
+		FullTimestamp: true,
 		ForceColors:   true,
 	}
 	baseLogger.Level = logrus.DebugLevel // Set the default level. You can make this configurable.

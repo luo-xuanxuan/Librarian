@@ -7,7 +7,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"Librarian/commands"
+	"Librarian/command_handler"
+	"Librarian/commands/roles"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -41,7 +42,9 @@ func main() {
 		return
 	}
 	defer s.Close()
-	defer commands.Clean(s)
+
+	command_handler.Start_Handler(s)
+	defer command_handler.Unregister_Commands(s)
 
 	create_commands(s)
 
@@ -58,5 +61,5 @@ func create_commands(s *discordgo.Session) {
 	//commands.Register_Command("", commands.Pipebomb())
 
 	//roles
-	commands.Register_Packages(s, "781419076462837760", "Roles", "Hi")
+	command_handler.Register_Command(s, "781419076462837760", &roles.Role_Command{})
 }

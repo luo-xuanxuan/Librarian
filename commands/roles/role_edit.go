@@ -1,5 +1,6 @@
 package roles
 
+/*
 import (
 	"Librarian/config"
 	"Librarian/utils"
@@ -281,4 +282,4 @@ func remove(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			return
 		}
 	}
-}
+}*/
