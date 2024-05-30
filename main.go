@@ -9,6 +9,7 @@ import (
 
 	"Librarian/command_handler"
 	"Librarian/commands/roles"
+	"Librarian/commands/universalis"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -56,10 +57,6 @@ func main() {
 }
 
 func create_commands(s *discordgo.Session) {
-	//misc commands
-	//commands.Register_Command("", commands.Hi())
-	//commands.Register_Command("", commands.Pipebomb())
-
 	//roles
-	command_handler.Register_Command(s, "781419076462837760", &roles.Role_Command{})
+	command_handler.Register_Command(s, "781419076462837760", &roles.Role_Command{}, &universalis.Universalis_Command{})
 }
