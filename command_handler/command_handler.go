@@ -31,7 +31,8 @@ func Register_Command(s *discordgo.Session, guild string, commands ...Command) {
 		app := cmd.Reference()
 		app, err := s.ApplicationCommandCreate(s.State.User.ID, guild, app)
 		if err != nil {
-			log.Fatal(err.Error())
+			log.Println(err.Error())
+			return
 		}
 		command_references[app.ID] = cmd
 	}
